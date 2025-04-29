@@ -1,94 +1,70 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, useForm } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { useForm } from '@inertiajs/react';
 
-export default function ResetPassword({ token, email }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        token: token,
-        email: email,
+export default function ResetPassword({ canLogin, canRegister, email }) {
+    const { data, setData, post, processing, errors } = useForm({
+        email: email || '',
         password: '',
         password_confirmation: '',
     });
 
     const submit = (e) => {
         e.preventDefault();
-
-        post(route('password.store'), {
-            onFinish: () => reset('password', 'password_confirmation'),
-        });
+        post(route('password.update'));
     };
 
     return (
-        <GuestLayout>
-            <Head title="Reset Password" />
-
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
+        <div className="min-h-screen bg-[#f0f9fb] font-['Roboto']">
+            <header className="header">
+                <div className="nav">
+                    <a href="#" className="nav-item active">Màn Hình</a>
+                    <span className="nav-label">Nhập Mật Khẩu Mới</span>
                 </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        isFocused={true}
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
+                <div className="logo-container">
+                    <img src="/images/manhinhdangnhap/logo.png" alt="Logo" className="logo-header" />
                 </div>
+            </header>
 
-                <div className="mt-4">
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                    />
-
-                    <TextInput
-                        type="password"
-                        id="password_confirmation"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
-                        }
-                    />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
+            <div className="container">
+                <div className="left-image">
+                    <img src="/images/manhinhdangnhap/logo.png" alt="Logo" />
                 </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Reset Password
-                    </PrimaryButton>
+                <div className="form-area">
+                    <h2>Tạo mật khẩu mới</h2>
+                    <form onSubmit={submit}>
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                name="password"
+                                value={data.password}
+                                onChange={(e) => setData('password', e.target.value)}
+                                className="form-control"
+                                placeholder="Nhập mật khẩu mới"
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                name="password_confirmation"
+                                value={data.password_confirmation}
+                                onChange={(e) => setData('password_confirmation', e.target.value)}
+                                className="form-control"
+                                placeholder="Xác nhận lại mật khẩu"
+                                required
+                            />
+                        </div>
+                        <button type="submit" className="btn-submit" disabled={processing}>
+                            Đặt lại mật khẩu
+                        </button>
+                    </form>
+                    <div className="divider"><span>Hoặc</span></div>
+                    <div className="links">
+                        <p>Bạn chưa có tài khoản? <a href={canRegister}>Đăng ký</a></p>
+                        <p>Bạn đã có tài khoản? <a href={canLogin}>Đăng nhập</a></p>
+                    </div>
                 </div>
-            </form>
-        </GuestLayout>
+            </div>
+        </div>
     );
 }

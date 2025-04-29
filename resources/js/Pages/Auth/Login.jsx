@@ -1,13 +1,9 @@
-import Checkbox from '@/Components/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import React from 'react';
+import { Head, useForm } from '@inertiajs/react';
+ // vẫn giữ nếu bro cần override thêm
 
 export default function Login({ status, canResetPassword }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         email: '',
         password: '',
         remember: false,
@@ -15,86 +11,104 @@ export default function Login({ status, canResetPassword }) {
 
     const submit = (e) => {
         e.preventDefault();
-
-        post(route('login'), {
-            onFinish: () => reset('password'),
-        });
+        post(route('login'));
     };
 
     return (
-        <GuestLayout>
-            <Head title="Log in" />
+        <>
+            <Head title="Đăng Nhập" />
 
-            {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    {status}
+            {/* Header */}
+            <header className="flex justify-between items-center px-8 py-4 bg-[#b5e8f7] border-b border-[#a0d0e0]">
+                <nav className="flex space-x-4">
+                    <a href="#" className="text-gray-800 text-base nav-item active">Màn Hình</a>
+                    <a href="#" className="text-gray-800 text-base nav-item">Đăng Nhập</a>
+                </nav>
+                <div className="logo-container">
+                    <img src="/images/manhinhdangnhap/logo.png" alt="Logo" className="h-10 w-auto" />
                 </div>
-            )}
+            </header>
 
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
+            {/* Main Content */}
+            <div className="max-w-6xl mx-auto my-12 flex justify-center items-center px-4">
+                {/* Image */}
+                <div className="w-1/2 p-4 hidden md:block">
+                    <img
+                        src="/images/manhinhdangnhap/logo.png"
+                        alt="Logo"
+                        className="w-full border-2 border-[#3083a7] rounded"
                     />
-
-                    <InputError message={errors.email} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                {/* Form */}
+                <div className="w-full md:w-1/2 p-8 bg-white shadow-md rounded-md">
+                    <h2 className="text-2xl font-semibold mb-6 text-gray-800">Đăng Nhập</h2>
 
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
+                    {status && <div className="mb-4 text-green-600">{status}</div>}
 
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
+                    <form onSubmit={submit} className="space-y-5">
+                        <div>
+                            <input
+                                type="email"
+                                className="form-control w-full border border-gray-300 px-4 py-3 rounded text-base"
+                                name="email"
+                                value={data.email}
+                                onChange={(e) => setData('email', e.target.value)}
+                                placeholder="Nhập email"
+                                required
+                            />
+                            {errors.email && (
+                                <div className="text-sm text-red-600 mt-1">{errors.email}</div>
+                            )}
+                        </div>
 
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData('remember', e.target.checked)
-                            }
-                        />
-                        <span className="ms-2 text-sm text-gray-600">
-                            Remember me
-                        </span>
-                    </label>
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        <div>
+                            <input
+                                type="password"
+                                className="form-control w-full border border-gray-300 px-4 py-3 rounded text-base"
+                                name="password"
+                                value={data.password}
+                                onChange={(e) => setData('password', e.target.value)}
+                                placeholder="Nhập mật khẩu"
+                                required
+                            />
+                            {errors.password && (
+                                <div className="text-sm text-red-600 mt-1">{errors.password}</div>
+                            )}
+                        </div>
+                            
+                        <button
+                            type="submit"
+                            className="btn-login w-full bg-[#45c6f3] text-white py-3 rounded text-base font-medium hover:bg-[#3095be] transition"
+                            disabled={processing}
                         >
-                            Forgot your password?
-                        </Link>
+                            Đăng nhập
+                        </button>
+                    </form>
+
+                    {canResetPassword && (
+                        <a
+                            href={route('password.request')}
+                            className="block text-center mt-4 text-sm text-gray-700 hover:underline"
+                        >
+                            Quên mật khẩu?
+                        </a>
                     )}
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+                    <div className="flex items-center my-6">
+                        <div className="flex-grow border-t border-gray-300" />
+                        <span className="mx-4 text-gray-500">Hoặc</span>
+                        <div className="flex-grow border-t border-gray-300" />
+                    </div>
+
+                    <div className="text-center text-sm">
+                        Bạn chưa có tài khoản?{' '}
+                        <a href={route('register')} className="text-[#3083a7] hover:underline">
+                            Đăng Ký
+                        </a>
+                    </div>
                 </div>
-            </form>
-        </GuestLayout>
+            </div>
+        </>
     );
 }
